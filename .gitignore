@@ -1,0 +1,7 @@
+# CMake
+cmake-build-*/
+build
+cmake
+
+# JetBrains idea config folder
+.idea/
