@@ -3,8 +3,8 @@ project(toci C)
 
 # This is so the runtime and assets work with each other. =)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY ${CMAKE_SOURCE_DIR}/assets
-        DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+#file(COPY ${CMAKE_SOURCE_DIR}/assets
+#        DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
