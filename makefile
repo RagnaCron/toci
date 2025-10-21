@@ -8,10 +8,8 @@ JOBS := 6
 
 # Compiler flags
 ifeq ($(BUILD_TYPE),Release)
-  CXXFLAGS := -Wall -Wextra -Wpedantic -O0 -g
   CFLAGS   := -Wall -Wextra -Wpedantic -O0 -g
 else
-  CXXFLAGS := -Wall -Wextra -Wpedantic -O3
   CFLAGS   := -Wall -Wextra -Wpedantic -O3
 endif
 
@@ -25,7 +23,6 @@ configure:
 	cmake -S . -B $(BUILD_DIR) \
 		-G "$(GENERATOR)" \
 		-DCMAKE_BUILD_TYPE=$(BUILD_TYPE) \
-		-DCMAKE_CXX_FLAGS="$(CXXFLAGS)" \
 		-DCMAKE_C_FLAGS="$(CFLAGS)"
 
 # Build step
