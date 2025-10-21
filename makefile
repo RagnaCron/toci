@@ -33,7 +33,7 @@ build:
 # Run tests (passes any CLI args to the program)
 .PHONY: test
 test: build
-	@echo "Running program with args: $(ARGS)"
+	@echo "Running program with args: $(ARGS)\n\n"
 	@$(BUILD_DIR)/$$(basename $$(pwd)) $(ARGS)
 
 # Clean build directory
