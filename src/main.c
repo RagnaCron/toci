@@ -32,12 +32,17 @@ int main(const int argc, const char *argv[]) {
 }
 
 void printUsage(void) {
-    printf("Usage: toci <command>\n");
-    printf("\tCommands:\n");
-    printf("\thelp\t\tThis is it...\n");
-    printf("\tlist <filename>\tThis will list all todos.\n");
-    printf("\tnew <filename>\tThis will create a new todo file or\n\t\t\tappend to an existing one.\n");
-    printf("\n");
+    printf("Usage: toci <command>\n"
+           "\tCommands:\n"
+           "\thelp\t\tThis is it...\n"
+           "\tlist <filename>\tThis will list all todos.\n"
+           "\tnew <filename>\tThis will create a new todo file or\n"
+           "\t\t\tappend to an existing one.\n"
+           "\nInfo:\n"
+           "\tThe todo should be on a single line.\n"
+           "\tThe line length should not be more then 254 characters\n"
+           "\tor it will be cut of...\n"
+           "\n");
 }
 
 int listTodos(const char *file_name) {
@@ -49,7 +54,7 @@ int listTodos(const char *file_name) {
         return errno;
     }
 
-    char line[MAX_LINE + 1];
+    char line[MAX_LINE];
     while (fgets(line, MAX_LINE, fptr)) {
         printf("%s", line);
     }
@@ -67,14 +72,24 @@ int newTodos(const char *file_name) {
         return errno;
     }
 
-    char line[MAX_LINE + 1];
+    char line[MAX_LINE];
+    // todo: rewrite this to use getchar and check for EOF and newline char... so that I can react better to MAX_LINE situations...
+    printf("Enter Todo |> ");
     while (fgets(line, MAX_LINE, stdin)) {
+        // printf("line length: %lu\n", strlen(line));
+        if (strlen(line) == MAX_LINE - 1) {
+            fprintf(stderr, "The line is to long. No more then 253 characters.\n");
+            fflush_unlocked(stdin);
+            continue;
+        }
         if (line[0] == '[') {
             fprintf(fptr, "%s", line);
         } else {
             fprintf(fptr, "[] %s", line);
         }
+        printf("Enter Todo |> ");
     }
+    printf("\n");
 
     fclose(fptr);
     return EXIT_SUCCESS;

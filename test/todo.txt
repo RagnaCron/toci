@@ -1,4 +1,4 @@
 [] Write a simple todo cli program
 [] Check if the syntax is correct
 [X] Create this todo file
-This line is missing the checkbox '[]' and should be flaged with a descriptiv error.
+This line is missing the checkbox '[]' and should be flagged with a descriptive error.
