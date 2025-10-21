@@ -1,0 +1,3 @@
+[] Write a simple todo cli program
+[] Check if the syntax is correct
+[Done] Create this todo file
