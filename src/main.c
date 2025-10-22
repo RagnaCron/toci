@@ -1,9 +1,12 @@
 #include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
-#define MAX_LINE 254
+#define MAX_LINE 255
+#define LINE 127
 
 void printUsage(void);
 int listTodos(const char *file_name);
@@ -60,9 +63,36 @@ int listTodos(const char *file_name) {
     }
 
     fclose(fptr);
-
     return EXIT_SUCCESS;
 }
+
+static void flush_stdin(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
+}
+
+static int read_line(char line[]) {
+    char c;
+    int i = 0;
+    while ((c = getchar()) != EOF) {
+        if (i < LINE) {
+            line[i++] = c;
+            if (c == '\n') {
+                break;
+            }
+        } else {
+            // discard rest of input
+            flush_stdin();
+            break;
+        }
+    }
+    line[i] = '\0';
+
+    return c == EOF ? EOF : i;
+}
+
+void check_todo(char line[]) {}
 
 int newTodos(const char *file_name) {
     FILE *fptr = fopen(file_name, "a");
@@ -73,23 +103,25 @@ int newTodos(const char *file_name) {
     }
 
     char line[MAX_LINE];
-    // todo: rewrite this to use getchar and check for EOF and newline char... so that I can react better to MAX_LINE situations...
-    printf("Enter Todo |> ");
-    while (fgets(line, MAX_LINE, stdin)) {
-        // printf("line length: %lu\n", strlen(line));
-        if (strlen(line) == MAX_LINE - 1) {
-            fprintf(stderr, "The line is to long. No more then 253 characters.\n");
-            fflush_unlocked(stdin);
+    for (;;) {
+        printf("New Todo > ");
+
+        int i = read_line(line);
+
+        if (i == EOF) {
+            printf("\n");
+            break;
+        }
+
+        if (i == LINE) {
+            printf("The line is to long. Only use 128 characters.\n");
             continue;
         }
-        if (line[0] == '[') {
-            fprintf(fptr, "%s", line);
-        } else {
-            fprintf(fptr, "[] %s", line);
-        }
-        printf("Enter Todo |> ");
+
+        check_todo(line);
+
+        // fprintf(fptr, "%s", line);
     }
-    printf("\n");
 
     fclose(fptr);
     return EXIT_SUCCESS;
