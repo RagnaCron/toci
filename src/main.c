@@ -5,8 +5,11 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MAX_LINE 255
-#define LINE 127
+#define MAX_LINE 128
+#define LINE 121
+
+#define CHECKBOX_UNCHECKED "[] "
+#define CHECKBOX_CHECKED "[X] "
 
 void printUsage(void);
 int listTodos(const char *file_name);
@@ -92,7 +95,17 @@ static int read_line(char line[]) {
     return c == EOF ? EOF : i;
 }
 
-void check_todo(char line[]) {}
+void ensure_checkbox_prefix(char line[]) {
+    if (strncmp(line, CHECKBOX_UNCHECKED, strlen(CHECKBOX_UNCHECKED)) == 0 ||
+        strncmp(line, CHECKBOX_CHECKED, strlen(CHECKBOX_CHECKED)) == 0) {
+        return;
+    }
+
+    char new_line[MAX_LINE];
+    strcpy(new_line, CHECKBOX_UNCHECKED);
+    strcat(new_line, line);
+    strcpy(line, new_line);
+}
 
 int newTodos(const char *file_name) {
     FILE *fptr = fopen(file_name, "a");
@@ -114,13 +127,13 @@ int newTodos(const char *file_name) {
         }
 
         if (i == LINE) {
-            printf("The line is to long. Only use 128 characters.\n");
+            printf("The line is to long. Only use 121 characters.\n");
             continue;
         }
 
-        check_todo(line);
+        ensure_checkbox_prefix(line);
 
-        // fprintf(fptr, "%s", line);
+        fprintf(fptr, "%s", line);
     }
 
     fclose(fptr);
