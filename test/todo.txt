@@ -1,7 +1,9 @@
 [] Write a simple todo cli program
 [] Check if the syntax is correct
 [X] Create this todo file
-This line is missing the checkbox '[]' and should be flagged with a descriptive error.
+[] This line is missing the checkbox '[]' and should be flagged with a descriptive error.
 [] New text
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-Hello, this is a very long message, it is to long and thus it will have to be shortened, but for now we will test with this long line if it works...
+[] exchange
+
+[] Hello
+

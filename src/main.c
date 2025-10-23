@@ -91,7 +91,7 @@ static int read_line(char line[]) {
                 break;
             }
         } else {
-            // discard rest of input
+            // discard the rest of input
             flush_stdin();
             break;
         }
@@ -131,18 +131,18 @@ int newTodos(const char *file_name) {
         return errno;
     }
 
-    char line[MAX_LINE];
     for (;;) {
+        char line[MAX_LINE];
         printf("New Todo > ");
 
-        int i = read_line(line);
+        const int state = read_line(line);
 
-        if (i == EOF) {
+        if (state == EOF) {
             printf("\n");
             break;
         }
 
-        if (i == LINE) {
+        if (state == LINE) {
             printf("The line is to long. Only use 121 characters.\n");
             continue;
         }
@@ -172,8 +172,6 @@ static int handleLongLine(char line[]) {
         printf("Enter <ctrl + D> to remove this line.\n");
         printf("Enter a shorter version (max %d chars):\n", LINE);
 
-        fflush(stdout);
-
         char new_line[MAX_LINE];
         state = read_line(new_line);
 
@@ -182,7 +180,7 @@ static int handleLongLine(char line[]) {
             break;
         }
 
-        if (state == LINE) {
+        if (state <= LINE) {
             strcpy(line, new_line);
             break;
         }
@@ -192,9 +190,9 @@ static int handleLongLine(char line[]) {
 }
 
 static void discardLine(FILE *in) {
-    char c;
+    int c;
     while (fgetc(in) != '\n' && c != EOF)
-        ;
+        printf("%c", (char)c);
 }
 
 int fixTodos(const char *file_name) {
@@ -206,15 +204,15 @@ int fixTodos(const char *file_name) {
         return errno;
     }
 
-    char line[MAX_LINE];
-    while (fgets(line, MAX_LINE, in)) {
-        if (strlen(line) == MAX_LINE) {
+    char line[MAX_LINE + 1];
+    while (fgets(line, MAX_LINE + 1, in)) {
+        if (strlen(line) == (MAX_LINE)) {
             discardLine(in);
         }
         trimNewLine(line);
 
         if (strlen(line) > LINE) {
-            int state = handleLongLine(line);
+            const int state = handleLongLine(line);
             if (state == EOF) {
                 continue;
             }
