@@ -82,11 +82,11 @@ static void flush_stdin(void) {
 }
 
 static int read_line(char line[]) {
-    char c;
+    int c;
     int i = 0;
     while ((c = getchar()) != EOF) {
         if (i < LINE) {
-            line[i++] = c;
+            line[i++] = (char)c;
             if (c == '\n') {
                 break;
             }
@@ -99,7 +99,8 @@ static int read_line(char line[]) {
     line[i] = '\0';
 
     if (c == EOF) {
-        flush_stdin(); // to leave a clean stdin state
+        clearerr(stdin); // this is probably not needed...
+        flush_stdin();   // to leave a clean stdin state
     }
 
     return c == EOF ? EOF : i;
@@ -175,7 +176,6 @@ static int handleLongLine(char line[]) {
 
         char new_line[MAX_LINE];
         state = read_line(new_line);
-        strcpy(new_line, line);
 
         if (state == EOF) {
             clearerr(stdin);
@@ -183,6 +183,7 @@ static int handleLongLine(char line[]) {
         }
 
         if (state == LINE) {
+            strcpy(line, new_line);
             break;
         }
     }
@@ -191,8 +192,8 @@ static int handleLongLine(char line[]) {
 }
 
 static void discardLine(FILE *in) {
-    char line[MAX_LINE];
-    while (fgets(line, MAX_LINE, in))
+    char c;
+    while (fgetc(in) != '\n' && c != EOF)
         ;
 }
 
@@ -205,9 +206,9 @@ int fixTodos(const char *file_name) {
         return errno;
     }
 
-    char line[MAX_LINE + 1];
-    while (fgets(line, MAX_LINE + 1, in)) {
-        if (strlen(line) > MAX_LINE) {
+    char line[MAX_LINE];
+    while (fgets(line, MAX_LINE, in)) {
+        if (strlen(line) == MAX_LINE) {
             discardLine(in);
         }
         trimNewLine(line);
