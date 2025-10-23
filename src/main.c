@@ -155,7 +155,11 @@ int newTodos(const char *file_name) {
     return EXIT_SUCCESS;
 }
 
-static void trimNewLine(char line[]) { line[strcspn(line, "\n")] = '\0'; }
+static void trimNewLine(char line[]) {
+    if (strchr(line, '\n') != NULL) {
+        line[strcspn(line, "\n")] = '\0';
+    }
+}
 
 static int handleLongLine(char line[]) {
     int state = 0;
@@ -186,6 +190,12 @@ static int handleLongLine(char line[]) {
     return state;
 }
 
+static void discardLine(FILE *in) {
+    char line[MAX_LINE];
+    while (fgets(line, MAX_LINE, in))
+        ;
+}
+
 int fixTodos(const char *file_name) {
     FILE *in = fopen(file_name, "r");
     FILE *out = fopen("todo.tmp", "w");
@@ -195,8 +205,11 @@ int fixTodos(const char *file_name) {
         return errno;
     }
 
-    char line[MAX_LINE];
-    while (fgets(line, MAX_LINE, in)) {
+    char line[MAX_LINE + 1];
+    while (fgets(line, MAX_LINE + 1, in)) {
+        if (strlen(line) > MAX_LINE) {
+            discardLine(in);
+        }
         trimNewLine(line);
 
         if (strlen(line) > LINE) {
