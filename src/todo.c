@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <errno.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -36,6 +37,39 @@ int listTodos(const char *file_name, const char *option) {
     }
 
     fclose(fptr);
+    return EXIT_SUCCESS;
+}
+
+int checkTodos(const char *file_name, const char *option) {
+    FILE *in = fopen(file_name, "r");
+    FILE *out = fopen("todo.tmp", "w");
+
+    if (in == NULL || out == NULL) {
+        perror("Error opening file");
+        fprintf(stderr, "Error code: %d\n", errno);
+        return errno;
+    }
+
+    // if line number, check todo given (option) line number
+    // else if all, check all todos
+    // else itterate through todos and ask yes/no for each todo
+    bool checkSinlge = false;
+    if (option == NULL) {
+        checkSinlge = true;
+    }
+
+    int line_number = 0;
+    char line[MAX_LINE];
+    while (fgets(line, MAX_LINE, in)) {
+        if (checkSinlge) {}
+    }
+
+    fclose(in);
+    fclose(out);
+
+    remove(file_name);
+    rename("todo.tmp", file_name);
+
     return EXIT_SUCCESS;
 }
 

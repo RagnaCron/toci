@@ -27,8 +27,12 @@ int main(const int argc, const char *argv[]) {
         return EXIT_SUCCESS;
     }
 
-    if (strcmp(argv[1], "list") == 0 && argc >= 3) {
+    if (strcmp(argv[1], "list") == 0 && argc >= 3 && argc < 5) {
         return listTodos(argv[2], argv[3]);
+    }
+
+    if (strcmp(argv[1], "check") == 0 && argc >= 3 && argc < 5) {
+        return checkTodos(argv[2], argv[3]);
     }
 
     if (strcmp(argv[1], "new") == 0 && argc == 3) {
