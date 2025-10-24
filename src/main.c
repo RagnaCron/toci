@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -37,6 +38,7 @@ int main(const int argc, const char *argv[]) {
             printUsage();
             return EXIT_FAILURE;
         }
+
         return checkTodos(argv[2], argv[3]);
     }
 
@@ -47,7 +49,10 @@ int main(const int argc, const char *argv[]) {
     if (strcmp(argv[1], "fix") == 0 && argc == 3) {
         return fixTodos(argv[2]);
     }
-    return EXIT_SUCCESS;
+
+    fprintf(stderr, "Uups, you messed up, try again!\n");
+    printUsage();
+    return EXIT_FAILURE;
 }
 
 void printUsage(void) {

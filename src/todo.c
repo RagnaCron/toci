@@ -40,7 +40,48 @@ int listTodos(const char *file_name, const char *option) {
     return EXIT_SUCCESS;
 }
 
+static bool isNumber(const char *option, long *number) {
+    char *endptr;
+
+    *number = strtol(option, &endptr, 10);
+
+    if (*endptr != '\0') {
+        perror("Invalid integer");
+        fprintf(stderr, "Invalid integer: '%s'\n", option);
+        return false;
+    }
+
+    return true;
+}
+
+static int checkTodo(char *line) {
+    char new_line[MAX_LINE];
+    strcpy(new_line, CHECKBOX_CHECKED);
+
+    int index = 0;
+    int pos = 2;
+
+    while (line[pos + index] != '\n') {
+        new_line[3 + index] = line[pos + index];
+        index++;
+    }
+    new_line[3 + index++] = '\n';
+    new_line[3 + index] = '\0';
+
+    strcpy(line, new_line);
+
+    return EXIT_SUCCESS;
+}
+
 int checkTodos(const char *file_name, const char *option) {
+    long number = 0;
+    bool isAll = strcmp(option, "all") == 0;
+    if (!isAll) {
+        if (!isNumber(option, &number)) {
+            fprintf(stderr, "Passed the wrong subcommand...\n");
+            return EXIT_FAILURE;
+        }
+    }
 
     FILE *in = fopen(file_name, "r");
     FILE *out = fopen("todo.tmp", "w");
@@ -51,20 +92,40 @@ int checkTodos(const char *file_name, const char *option) {
         return errno;
     }
 
-    // if line number, check todo given (option) line number
-    // else if all, check all todos
-
+    int state = EXIT_SUCCESS;
     int line_number = 0;
     char line[MAX_LINE];
-    while (fgets(line, MAX_LINE, in)) {}
+    while (fgets(line, MAX_LINE, in)) {
+        if (state != EXIT_SUCCESS) {
+            break;
+        }
+
+        ++line_number;
+
+        if (number > 0 && number == line_number) {
+            if (!isChecked(line)) {
+                state = checkTodo(line);
+            }
+        } else if (isAll) {
+            if (!isChecked(line)) {
+                state = checkTodo(line);
+            }
+        }
+
+        fprintf(out, "%s", line);
+    }
 
     fclose(in);
     fclose(out);
 
-    remove(file_name);
-    rename("todo.tmp", file_name);
+    if (state == EXIT_SUCCESS) {
+        remove(file_name);
+        rename("todo.tmp", file_name);
+    } else {
+        remove("todo.tmp");
+    }
 
-    return EXIT_SUCCESS;
+    return state;
 }
 
 static void flush_stdin(void) {
