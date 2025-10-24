@@ -1,7 +1,7 @@
 #ifndef TODO_H
 #define TODO_H
 
-int listTodos(const char *file_name);
+int listTodos(const char *file_name, const char *option);
 int newTodos(const char *file_name);
 int fixTodos(const char *file_name);
 

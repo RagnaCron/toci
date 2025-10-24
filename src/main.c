@@ -29,7 +29,8 @@ int main(const int argc, const char *argv[]) {
         return EXIT_SUCCESS;
     }
 
-    if (strcmp(argv[1], "list") == 0 && argc == 3) {
+    if (strcmp(argv[1], "list") == 0 && argc >= 3) {
+        char *option = NULL;
         return listTodos(argv[2]);
     }
 
