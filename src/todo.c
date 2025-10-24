@@ -12,7 +12,7 @@
 
 
 static bool isChecked(const char line[]) {
-    return strncmp(line, CHECKBOX_UNCHECKED, strlen(CHECKBOX_UNCHECKED)) == 0;
+    return strncmp(line, CHECKBOX_CHECKED, strlen(CHECKBOX_CHECKED)) == 0;
 }
 
 int listTodos(const char *file_name, const char *option) {
@@ -29,9 +29,9 @@ int listTodos(const char *file_name, const char *option) {
         ++line_number;
         if (option == NULL) {
             printf("%3d %s", line_number, line);
-        } else if (strcmp(option, "checked") && isChecked(line)) {
+        } else if (strcmp(option, "checked") == 0 && isChecked(line)) {
             printf("%3d %s", line_number, line);
-        } else if (strcmp(option, "unchecked") && !isChecked(line)) {
+        } else if (strcmp(option, "unchecked") == 0 && !isChecked(line)) {
             printf("%3d %s", line_number, line);
         }
     }
@@ -41,6 +41,7 @@ int listTodos(const char *file_name, const char *option) {
 }
 
 int checkTodos(const char *file_name, const char *option) {
+
     FILE *in = fopen(file_name, "r");
     FILE *out = fopen("todo.tmp", "w");
 
@@ -52,17 +53,10 @@ int checkTodos(const char *file_name, const char *option) {
 
     // if line number, check todo given (option) line number
     // else if all, check all todos
-    // else itterate through todos and ask yes/no for each todo
-    bool checkSinlge = false;
-    if (option == NULL) {
-        checkSinlge = true;
-    }
 
     int line_number = 0;
     char line[MAX_LINE];
-    while (fgets(line, MAX_LINE, in)) {
-        if (checkSinlge) {}
-    }
+    while (fgets(line, MAX_LINE, in)) {}
 
     fclose(in);
     fclose(out);

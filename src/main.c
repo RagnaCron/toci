@@ -31,7 +31,12 @@ int main(const int argc, const char *argv[]) {
         return listTodos(argv[2], argv[3]);
     }
 
-    if (strcmp(argv[1], "check") == 0 && argc >= 3 && argc < 5) {
+    if (strcmp(argv[1], "check") == 0 && argc == 4) {
+        if (argv[3] == NULL) {
+            fprintf(stderr, "Missing subcommand.\n");
+            printUsage();
+            return EXIT_FAILURE;
+        }
         return checkTodos(argv[2], argv[3]);
     }
 
