@@ -11,25 +11,28 @@
 
 
 static bool isChecked(const char line[]) {
-    return strncmp(line, CHECKBOX_CHECKED, strlen(CHECKBOX_CHECKED)) == 0;
+    return strncmp(line, CHECKBOX_UNCHECKED, strlen(CHECKBOX_UNCHECKED)) == 0;
 }
 
 int listTodos(const char *file_name, const char *option) {
     FILE *fptr = fopen(file_name, "r");
-
     if (fptr == NULL) {
         perror("Error opening file");
         fprintf(stderr, "Error code: %d\n", errno);
         return errno;
     }
 
-    if (option != NULL)
-        printf("%s\n", option);
-
     int line_number = 0;
     char line[MAX_LINE];
     while (fgets(line, MAX_LINE, fptr)) {
-        printf("%3d %2s", ++line_number, line);
+        ++line_number;
+        if (option == NULL) {
+            printf("%3d %2s", line_number, line);
+        } else if (strcmp(option, "checked") && isChecked(line)) {
+            printf("%3d %2s", line_number, line);
+        } else if (strcmp(option, "unchecked") && !isChecked(line)) {
+            printf("%3d %2s", line_number, line);
+        }
     }
 
     fclose(fptr);
