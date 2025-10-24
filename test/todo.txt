@@ -4,6 +4,3 @@
 [] This line is missing the checkbox '[]' and should be flagged with a descriptive error.
 [] New text
 [] exchange
-
-[] Hello
-

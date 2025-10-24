@@ -98,11 +98,6 @@ static int read_line(char line[]) {
     }
     line[i] = '\0';
 
-    if (c == EOF) {
-        clearerr(stdin); // this is probably not needed...
-        flush_stdin();   // to leave a clean stdin state
-    }
-
     return c == EOF ? EOF : i;
 }
 
@@ -162,6 +157,12 @@ static void trimNewLine(char line[]) {
     }
 }
 
+static void discardLine(FILE *in) {
+    int c;
+    while (fgetc(in) != '\n' && c != EOF)
+        printf("%c", (char)c);
+}
+
 static int handleLongLine(char line[]) {
     int state = 0;
 
@@ -181,6 +182,7 @@ static int handleLongLine(char line[]) {
         }
 
         if (state <= LINE) {
+            trimNewLine(new_line);
             strcpy(line, new_line);
             break;
         }
@@ -189,11 +191,6 @@ static int handleLongLine(char line[]) {
     return state;
 }
 
-static void discardLine(FILE *in) {
-    int c;
-    while (fgetc(in) != '\n' && c != EOF)
-        printf("%c", (char)c);
-}
 
 int fixTodos(const char *file_name) {
     FILE *in = fopen(file_name, "r");
