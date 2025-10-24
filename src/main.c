@@ -28,7 +28,6 @@ int main(const int argc, const char *argv[]) {
     }
 
     if (strcmp(argv[1], "list") == 0 && argc >= 3) {
-        char *option = NULL;
         return listTodos(argv[2], argv[3]);
     }
 

@@ -27,11 +27,11 @@ int listTodos(const char *file_name, const char *option) {
     while (fgets(line, MAX_LINE, fptr)) {
         ++line_number;
         if (option == NULL) {
-            printf("%3d %2s", line_number, line);
+            printf("%3d %s", line_number, line);
         } else if (strcmp(option, "checked") && isChecked(line)) {
-            printf("%3d %2s", line_number, line);
+            printf("%3d %s", line_number, line);
         } else if (strcmp(option, "unchecked") && !isChecked(line)) {
-            printf("%3d %2s", line_number, line);
+            printf("%3d %s", line_number, line);
         }
     }
 
