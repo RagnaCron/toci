@@ -4,8 +4,8 @@
 #define MAX_LINE 128
 #define LINE 121
 
-#define CHECKBOX_UNCHECKED "[] "
-#define CHECKBOX_CHECKED "[X] "
+#define CHECKBOX_UNCHECKED "- "
+#define CHECKBOX_CHECKED "+ "
 
 
 #endif // !COMMON_H

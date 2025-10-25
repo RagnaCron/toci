@@ -1,4 +1,3 @@
-#include <ctype.h>
 #include <errno.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -54,19 +53,19 @@ static bool isNumber(const char *option, long *number) {
     return true;
 }
 
-static int checkTodo(char *line) {
+static int checkTodo(char *line, char *checkbox_str) {
     char new_line[MAX_LINE];
-    strcpy(new_line, CHECKBOX_CHECKED);
+    strcpy(new_line, checkbox_str);
 
     int index = 0;
-    int pos = 2;
+    int pos = 1;
 
     while (line[pos + index] != '\n') {
-        new_line[3 + index] = line[pos + index];
+        new_line[1 + index] = line[pos + index];
         index++;
     }
-    new_line[3 + index++] = '\n';
-    new_line[3 + index] = '\0';
+    new_line[1 + index++] = '\n';
+    new_line[1 + index] = '\0';
 
     strcpy(line, new_line);
 
@@ -104,11 +103,11 @@ int checkTodos(const char *file_name, const char *option) {
 
         if (number > 0 && number == line_number) {
             if (!isChecked(line)) {
-                state = checkTodo(line);
+                state = checkTodo(line, CHECKBOX_CHECKED);
             }
         } else if (isAll) {
             if (!isChecked(line)) {
-                state = checkTodo(line);
+                state = checkTodo(line, CHECKBOX_CHECKED);
             }
         }
 
@@ -253,8 +252,8 @@ int fixTodos(const char *file_name) {
         return errno;
     }
 
-    char line[MAX_LINE + 1];
-    while (fgets(line, MAX_LINE + 1, in)) {
+    char line[MAX_LINE];
+    while (fgets(line, MAX_LINE, in)) {
         if (strlen(line) == (MAX_LINE)) {
             discardLine(in);
         }
