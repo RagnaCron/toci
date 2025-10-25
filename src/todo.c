@@ -247,6 +247,45 @@ static int handleLongLine(char line[]) {
     return state;
 }
 
+int deleteTodos(const char *file_name, const char *option) {
+    long number = 0;
+    bool isAll = strcmp(option, "all") == 0;
+    if (!isAll) {
+        if (!isNumber(option, &number)) {
+            fprintf(stderr, "Passed the wrong subcommand...\n");
+            return EXIT_FAILURE;
+        }
+    }
+
+    FILE *in = fopen(file_name, "r");
+    FILE *out = fopen("todo.tmp", "w");
+
+    if (in == NULL || out == NULL) {
+        perror("Error opening file");
+        fprintf(stderr, "Error code: %d\n", errno);
+        return errno;
+    }
+
+    int state = EXIT_SUCCESS;
+
+    // todo: delete todos
+    // interactive??
+    // if passed a line number only delete this one.
+    // if passed all delete all.
+
+    fclose(in);
+    fclose(out);
+
+    if (state == EXIT_SUCCESS) {
+        remove(file_name);
+        rename("todo.tmp", file_name);
+    } else {
+        remove("todo.tmp");
+    }
+
+    return state;
+}
+
 int fixTodos(const char *file_name) {
     FILE *in = fopen(file_name, "r");
     FILE *out = fopen("todo.tmp", "w");
