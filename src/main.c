@@ -27,7 +27,7 @@ int main(const int argc, const char *argv[]) {
         return EXIT_SUCCESS;
     }
 
-    if (strcmp(argv[1], "list") == 0 && argc >= 3 && argc < 5) {
+    if (strcmp(argv[1], "list") == 0 && argc == 4) {
         return listTodos(argv[2], argv[3]);
     }
 
@@ -57,6 +57,16 @@ int main(const int argc, const char *argv[]) {
 
     if (strcmp(argv[1], "fix") == 0 && argc == 3) {
         return fixTodos(argv[2]);
+    }
+
+    if (strcmp(argv[1], "delete") == 0 && argc == 4) {
+        if (argv[3] == NULL) {
+            fprintf(stderr, "Missing subcommand.\n");
+            printUsage();
+            return EXIT_FAILURE;
+        }
+
+        return deleteTodos(argv[2], argv[3]);
     }
 
     fprintf(stderr, "Uups, you messed up, try again!\n");

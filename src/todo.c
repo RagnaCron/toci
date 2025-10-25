@@ -215,7 +215,7 @@ static void trimNewLine(char line[]) {
 
 static void discardLine(FILE *in) {
     int c;
-    while (fgetc(in) != '\n' && c != EOF)
+    while ((c = fgetc(in)) != '\n' && c != EOF)
         printf("%c", (char)c);
 }
 
@@ -247,19 +247,31 @@ static int handleLongLine(char line[]) {
     return state;
 }
 
+static bool removeTodo(const char *line) {
+    printf("%s", line);
+    printf("Remove the line, y/n (default): ");
+    char c = getchar();
+    if (c == 'y')
+        return true;
+    else
+        return false;
+}
+
 int deleteTodos(const char *file_name, const char *option) {
     long number = 0;
     bool isAll = strcmp(option, "all") == 0;
+    bool isInteractive = strcmp(option, "i") == 0;
     if (!isAll) {
-        if (!isNumber(option, &number)) {
-            fprintf(stderr, "Passed the wrong subcommand...\n");
-            return EXIT_FAILURE;
+        if (!isInteractive) {
+            if (!isNumber(option, &number)) {
+                fprintf(stderr, "Passed the wrong subcommand...\n");
+                return EXIT_FAILURE;
+            }
         }
     }
 
     FILE *in = fopen(file_name, "r");
     FILE *out = fopen("todo.tmp", "w");
-
     if (in == NULL || out == NULL) {
         perror("Error opening file");
         fprintf(stderr, "Error code: %d\n", errno);
@@ -268,10 +280,23 @@ int deleteTodos(const char *file_name, const char *option) {
 
     int state = EXIT_SUCCESS;
 
-    // todo: delete todos
-    // interactive??
-    // if passed a line number only delete this one.
-    // if passed all delete all.
+    if (!isAll) {
+        int line_number = 0;
+        char line[MAX_LINE];
+        while (fgets(line, MAX_LINE, in)) {
+            ++line_number;
+
+            if (number > 0 && number == line_number) {
+                continue;
+            } else if (isInteractive) {
+                if (removeTodo(line)) {
+                    continue;
+                }
+            }
+
+            fprintf(out, "%s", line);
+        }
+    }
 
     fclose(in);
     fclose(out);
