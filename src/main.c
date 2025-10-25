@@ -1,4 +1,3 @@
-#include <ctype.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -39,7 +38,17 @@ int main(const int argc, const char *argv[]) {
             return EXIT_FAILURE;
         }
 
-        return checkTodos(argv[2], argv[3]);
+        return checkTodos(argv[2], argv[3], true);
+    }
+
+    if (strcmp(argv[1], "uncheck") == 0 && argc == 4) {
+        if (argv[3] == NULL) {
+            fprintf(stderr, "Missing subcommand.\n");
+            printUsage();
+            return EXIT_FAILURE;
+        }
+
+        return checkTodos(argv[2], argv[3], false);
     }
 
     if (strcmp(argv[1], "new") == 0 && argc == 3) {

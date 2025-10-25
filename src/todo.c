@@ -72,7 +72,7 @@ static int checkTodo(char *line, char *checkbox_str) {
     return EXIT_SUCCESS;
 }
 
-int checkTodos(const char *file_name, const char *option) {
+int checkTodos(const char *file_name, const char *option, bool isCheck) {
     long number = 0;
     bool isAll = strcmp(option, "all") == 0;
     if (!isAll) {
@@ -102,12 +102,16 @@ int checkTodos(const char *file_name, const char *option) {
         ++line_number;
 
         if (number > 0 && number == line_number) {
-            if (!isChecked(line)) {
+            if (isCheck && !isChecked(line)) {
                 state = checkTodo(line, CHECKBOX_CHECKED);
+            } else if (!isCheck && isChecked(line)) {
+                state = checkTodo(line, CHECKBOX_UNCHECKED);
             }
         } else if (isAll) {
-            if (!isChecked(line)) {
+            if (isCheck && !isChecked(line)) {
                 state = checkTodo(line, CHECKBOX_CHECKED);
+            } else if (!isCheck && isChecked(line)) {
+                state = checkTodo(line, CHECKBOX_UNCHECKED);
             }
         }
 
