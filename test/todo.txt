@@ -1,6 +1,0 @@
-+ Write a simple todo cli program
-- Check if the syntax is correct
-+ Create this todo file
-+ This line is missing the checkbox '- ' and should be fixed by the fix command.
-+ Refactor the todo signe to use '- '/'+ ' 
-- add uncheck command with line number or all subcommand
