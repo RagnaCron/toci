@@ -14,5 +14,21 @@ The format of the todo file is rather simple.
 - The '-' prefix is for the unchecked todo.
 - The '+' prefix is for the checked todo.
 
+## How to build.
 
+Only need a standard C compiler.
+
+Run this for compiling the build system:
+
+'''
+cc -o nob nob.c
+'''
+
+and then run:
+
+'''
+./nob
+'''
+
+This will build the 'toci' binary.
 
