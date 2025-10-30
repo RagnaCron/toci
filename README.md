@@ -9,11 +9,10 @@ The format of the todo file is rather simple.
 ```
 - Unchecked todo
 + Checked todo
-
 ```
 
-- The `- ` prefix is for the unchecked todo.
-- The `+ ` prefix is for the checked todo.
+- The "- " prefix is for the unchecked todo.
+- The "+ " prefix is for the checked todo.
 
 ## How to build.
 
