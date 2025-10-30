@@ -7,8 +7,9 @@
 
 #include "todo.h"
 
-void printUsage(void);
-void printInfo(void);
+static int hasNoSubcommand(const char *command);
+static void printUsage(void);
+static void printInfo(void);
 
 int main(const int argc, const char *argv[]) {
     if (argc < 2) {
@@ -27,30 +28,6 @@ int main(const int argc, const char *argv[]) {
         return EXIT_SUCCESS;
     }
 
-    if (strcmp(argv[1], "list") == 0 && argc == 4) {
-        return listTodos(argv[2], argv[3]);
-    }
-
-    if (strcmp(argv[1], "check") == 0 && argc == 4) {
-        if (argv[3] == NULL) {
-            fprintf(stderr, "Missing subcommand.\n");
-            printUsage();
-            return EXIT_FAILURE;
-        }
-
-        return checkTodos(argv[2], argv[3], true);
-    }
-
-    if (strcmp(argv[1], "uncheck") == 0 && argc == 4) {
-        if (argv[3] == NULL) {
-            fprintf(stderr, "Missing subcommand.\n");
-            printUsage();
-            return EXIT_FAILURE;
-        }
-
-        return checkTodos(argv[2], argv[3], false);
-    }
-
     if (strcmp(argv[1], "new") == 0 && argc == 3) {
         return newTodos(argv[2]);
     }
@@ -59,10 +36,32 @@ int main(const int argc, const char *argv[]) {
         return fixTodos(argv[2]);
     }
 
+    if (strcmp(argv[1], "list") == 0 && argc == 4) {
+        if (hasNoSubcommand(argv[3])) {
+            return EXIT_FAILURE;
+        }
+
+        return listTodos(argv[2], argv[3]);
+    }
+
+    if (strcmp(argv[1], "check") == 0 && argc == 4) {
+        if (hasNoSubcommand(argv[3])) {
+            return EXIT_FAILURE;
+        }
+
+        return checkTodos(argv[2], argv[3], true);
+    }
+
+    if (strcmp(argv[1], "uncheck") == 0 && argc == 4) {
+        if (hasNoSubcommand(argv[3])) {
+            return EXIT_FAILURE;
+        }
+
+        return checkTodos(argv[2], argv[3], false);
+    }
+
     if (strcmp(argv[1], "delete") == 0 && argc == 4) {
-        if (argv[3] == NULL) {
-            fprintf(stderr, "Missing subcommand.\n");
-            printUsage();
+        if (hasNoSubcommand(argv[3])) {
             return EXIT_FAILURE;
         }
 
@@ -74,20 +73,36 @@ int main(const int argc, const char *argv[]) {
     return EXIT_FAILURE;
 }
 
-void printUsage(void) {
+static int hasNoSubcommand(const char *command) {
+    if (command == NULL) {
+        fprintf(stderr, "Missing subcommand.\n");
+        printUsage();
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS; // return 0
+}
+
+static void printUsage(void) {
     printf("Usage: toci <command> [option]\n"
            "\tCommands:\n"
            "\thelp\t\tThis help text.\n"
            "\tinfo\t\tAdditional information on usage.\n"
-           "\tlist <filename> [checked|unchecked]\n"
-           "\t\t\tThis will list todos, not using an option will show all.\n"
-           "\tnew <filename>\tThis will create a new todo file or append\n"
+           "\tnew <filename>\tThis will create a new todo file or append.\n"
            "\t\t\tto an existing one.\n"
-           "\tfix <filename>\tThis will add a checkbox if one is missing.\n"
+           "\tfix <filename>\tThis will prefix a checkbox if one is missing.\n"
+           "\tlist <filename> [checked|unchecked|all]\n"
+           "\t\t\tThis will list todos depending on the subcommand.\n"
+           "\tcheck <filename> [linenumber|all]\n"
+           "\t\t\tThis will check a todo item depening on the subcommand.\n"
+           "\tuncheck <filename> [linenumber|all]\n"
+           "\t\t\tThis will uncheck a todo item depending on the subcommand.\n"
+           "\tdelete <filename> [linenumber|all]\n"
+           "\t\t\tThis will delete a todo item depending on the subcommand.\n"
            "\n");
 }
 
-void printInfo(void) {
+static void printInfo(void) {
     printf("Info:\n"
            "\tThe todo should be on a single line.\n"
            "\tThe line length should not be more then 121 characters or\n"

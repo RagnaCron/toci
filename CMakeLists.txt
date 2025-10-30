@@ -3,7 +3,7 @@ project(toci C)
 
 # This is so the runtime and assets work with each other. =)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY ${CMAKE_SOURCE_DIR}/test
+file(COPY ${CMAKE_SOURCE_DIR}/todos
         DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 set(CMAKE_C_STANDARD 23)
