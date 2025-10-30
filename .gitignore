@@ -5,3 +5,10 @@ cmake/
 
 # JetBrains idea config folder
 .idea/
+
+# exclude nob build artifacts
+nob
+nob.old
+
+# toci exe
+toci
