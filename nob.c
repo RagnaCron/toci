@@ -1,5 +1,6 @@
 #define NOB_IMPLEMENTATION
 #define NOB_WARN_DEPRECATED
+#define NOB_EXPERIMENTAL_DELETE_OLD
 
 #include "nob.h"
 
@@ -15,20 +16,8 @@ int main(int argc, char **argv) {
 
     Nob_Cmd cmd = {0};
 
-    nob_cmd_append(&cmd, "cc", "-Wall", "-Wextra", "-Wpedantic", "-c",
-                   SOURCE_FOLDER "todo.c", "-o", BUILD_FOLDER "todo.o");
-
-    if (!nob_cmd_run(&cmd))
-        return 1;
-
-    nob_cmd_append(&cmd, "cc", "-Wall", "-Wextra", "-Wpedantic", "-c",
-                   SOURCE_FOLDER "main.c", "-o", BUILD_FOLDER "main.o");
-
-    if (!nob_cmd_run(&cmd))
-        return 1;
-
-    nob_cmd_append(&cmd, "cc", BUILD_FOLDER "main.o", BUILD_FOLDER "todo.o",
-                   "-o", "toci");
+    nob_cmd_append(&cmd, "cc", "-Wall", "-Wextra", "-Wpedantic", "-o", "toci",
+                   SOURCE_FOLDER "main.c", SOURCE_FOLDER "todo.c");
 
     if (!nob_cmd_run(&cmd))
         return 1;
