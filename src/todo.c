@@ -10,11 +10,11 @@
 #include "todo.h"
 
 
-static bool isChecked(const char line[]) {
+static bool is_checked(const char line[]) {
     return strncmp(line, CHECKBOX_CHECKED, strlen(CHECKBOX_CHECKED)) == 0;
 }
 
-int listTodos(const char *file_name, const char *option) {
+int list_todos(const char *file_name, const char *option) {
     FILE *fptr = fopen(file_name, "r");
     if (fptr == NULL) {
         perror("Error opening file");
@@ -28,9 +28,9 @@ int listTodos(const char *file_name, const char *option) {
         ++line_number;
         if (option == NULL) {
             printf("%3d %s", line_number, line);
-        } else if (strcmp(option, "checked") == 0 && isChecked(line)) {
+        } else if (strcmp(option, "checked") == 0 && is_checked(line)) {
             printf("%3d %s", line_number, line);
-        } else if (strcmp(option, "unchecked") == 0 && !isChecked(line)) {
+        } else if (strcmp(option, "unchecked") == 0 && !is_checked(line)) {
             printf("%3d %s", line_number, line);
         }
     }
@@ -39,7 +39,7 @@ int listTodos(const char *file_name, const char *option) {
     return EXIT_SUCCESS;
 }
 
-static bool isNumber(const char *option, long *number) {
+static bool is_number(const char *option, long *number) {
     char *endptr;
 
     *number = strtol(option, &endptr, 10);
@@ -53,7 +53,7 @@ static bool isNumber(const char *option, long *number) {
     return true;
 }
 
-static int checkTodo(char *line, char *checkbox_str) {
+static int check_todo(char *line, char *checkbox_str) {
     char new_line[MAX_LINE];
     strcpy(new_line, checkbox_str);
 
@@ -72,11 +72,11 @@ static int checkTodo(char *line, char *checkbox_str) {
     return EXIT_SUCCESS;
 }
 
-int checkTodos(const char *file_name, const char *option, bool isCheck) {
+int check_todos(const char *file_name, const char *option, bool isCheck) {
     long number = 0;
     bool isAll = strcmp(option, "all") == 0;
     if (!isAll) {
-        if (!isNumber(option, &number)) {
+        if (!is_number(option, &number)) {
             fprintf(stderr, "Passed the wrong subcommand...\n");
             return EXIT_FAILURE;
         }
@@ -102,16 +102,16 @@ int checkTodos(const char *file_name, const char *option, bool isCheck) {
         ++line_number;
 
         if (number > 0 && number == line_number) {
-            if (isCheck && !isChecked(line)) {
-                state = checkTodo(line, CHECKBOX_CHECKED);
-            } else if (!isCheck && isChecked(line)) {
-                state = checkTodo(line, CHECKBOX_UNCHECKED);
+            if (isCheck && !is_checked(line)) {
+                state = check_todo(line, CHECKBOX_CHECKED);
+            } else if (!isCheck && is_checked(line)) {
+                state = check_todo(line, CHECKBOX_UNCHECKED);
             }
         } else if (isAll) {
-            if (isCheck && !isChecked(line)) {
-                state = checkTodo(line, CHECKBOX_CHECKED);
-            } else if (!isCheck && isChecked(line)) {
-                state = checkTodo(line, CHECKBOX_UNCHECKED);
+            if (isCheck && !is_checked(line)) {
+                state = check_todo(line, CHECKBOX_CHECKED);
+            } else if (!isCheck && is_checked(line)) {
+                state = check_todo(line, CHECKBOX_UNCHECKED);
             }
         }
 
@@ -157,14 +157,14 @@ static int read_line(char line[]) {
     return c == EOF ? EOF : i;
 }
 
-static bool hasCheckbox(char line[]) {
+static bool has_checkbox(char line[]) {
     return (strncmp(line, CHECKBOX_UNCHECKED, strlen(CHECKBOX_UNCHECKED)) ==
                 0 ||
             strncmp(line, CHECKBOX_CHECKED, strlen(CHECKBOX_CHECKED)) == 0);
 }
 
-static void ensureCheckboxPrefix(char line[]) {
-    if (hasCheckbox(line)) {
+static void ensure_checkbox_prefix(char line[]) {
+    if (has_checkbox(line)) {
         return;
     }
 
@@ -174,7 +174,7 @@ static void ensureCheckboxPrefix(char line[]) {
     strcpy(line, new_line);
 }
 
-int newTodos(const char *file_name) {
+int new_todos(const char *file_name) {
     FILE *fptr = fopen(file_name, "a");
     if (fptr == NULL) {
         perror("Error opening file");
@@ -198,7 +198,7 @@ int newTodos(const char *file_name) {
             continue;
         }
 
-        ensureCheckboxPrefix(line);
+        ensure_checkbox_prefix(line);
 
         fprintf(fptr, "%s", line);
     }
@@ -207,19 +207,19 @@ int newTodos(const char *file_name) {
     return EXIT_SUCCESS;
 }
 
-static void trimNewLine(char line[]) {
+static void trim_new_line(char line[]) {
     if (strchr(line, '\n') != NULL) {
         line[strcspn(line, "\n")] = '\0';
     }
 }
 
-static void discardLine(FILE *in) {
+static void discard_line(FILE *in) {
     int c;
     while ((c = fgetc(in)) != '\n' && c != EOF)
         printf("%c", (char)c);
 }
 
-static int handleLongLine(char line[]) {
+static int handle_long_line(char line[]) {
     int state = 0;
 
     for (;;) {
@@ -238,7 +238,7 @@ static int handleLongLine(char line[]) {
         }
 
         if (state <= LINE) {
-            trimNewLine(new_line);
+            trim_new_line(new_line);
             strcpy(line, new_line);
             break;
         }
@@ -247,7 +247,7 @@ static int handleLongLine(char line[]) {
     return state;
 }
 
-static bool removeTodo(const char *line) {
+static bool remove_todo(const char *line) {
     printf("%s", line);
     printf("Remove the line, y/n (default): ");
     char c = getchar();
@@ -257,13 +257,13 @@ static bool removeTodo(const char *line) {
         return false;
 }
 
-int deleteTodos(const char *file_name, const char *option) {
+int delete_todos(const char *file_name, const char *option) {
     long number = 0;
     bool isAll = strcmp(option, "all") == 0;
     bool isInteractive = strcmp(option, "i") == 0;
     if (!isAll) {
         if (!isInteractive) {
-            if (!isNumber(option, &number)) {
+            if (!is_number(option, &number)) {
                 fprintf(stderr, "Passed the wrong subcommand...\n");
                 return EXIT_FAILURE;
             }
@@ -289,7 +289,7 @@ int deleteTodos(const char *file_name, const char *option) {
             if (number > 0 && number == line_number) {
                 continue;
             } else if (isInteractive) {
-                if (removeTodo(line)) {
+                if (remove_todo(line)) {
                     continue;
                 }
             }
@@ -311,7 +311,7 @@ int deleteTodos(const char *file_name, const char *option) {
     return state;
 }
 
-int fixTodos(const char *file_name) {
+int fix_todos(const char *file_name) {
     FILE *in = fopen(file_name, "r");
     FILE *out = fopen("todo.tmp", "w");
     if (in == NULL || out == NULL) {
@@ -323,19 +323,19 @@ int fixTodos(const char *file_name) {
     char line[MAX_LINE];
     while (fgets(line, MAX_LINE, in)) {
         if (strlen(line) == (MAX_LINE)) {
-            discardLine(in);
+            discard_line(in);
         }
-        trimNewLine(line);
+        trim_new_line(line);
 
         if (strlen(line) > LINE) {
-            const int state = handleLongLine(line);
+            const int state = handle_long_line(line);
             if (state == EOF) {
                 continue;
             }
         }
 
-        if (!hasCheckbox(line)) {
-            ensureCheckboxPrefix(line);
+        if (!has_checkbox(line)) {
+            ensure_checkbox_prefix(line);
         }
 
         fprintf(out, "%s\n", line);
